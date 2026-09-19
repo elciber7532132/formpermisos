@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitud de Permiso</title>
+
+    <link rel="stylesheet" href="solicitarpermisos.css">
+</head>
+
+<body>
+
+    <div class="page">
+
+        <header class="topbar">
+            <div class="brand">
+                <div class="brand-icon">P</div>
+                <div>
+                    <h1>Portal del Trabajador</h1>
+                    <span>Solicitud de permisos y salidas</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="container">
+
+            <div class="welcome">
+                <h2>Solicitar permiso</h2>
+                <p>
+                    Completa el siguiente formulario para enviar una solicitud
+                    al área encargada.
+                </p>
+            </div>
+
+            <form id="solicitudForm">
+
+                <!-- DATOS DEL TRABAJADOR -->
+                <section class="card">
+
+                    <div class="section-title">
+                        <div class="number">1</div>
+                        <div>
+                            <h3>Datos del trabajador</h3>
+                            <p>Ingresa tus datos personales y laborales.</p>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label for="nombre">
+                                Nombre completo *
+                            </label>
+
+                            <input
+                                type="text"
+                                id="nombre"
+                                name="nombre"
+                                placeholder="Ej. Juan Pérez García"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="dni">
+                                DNI *
+                            </label>
+
+                            <input
+                                type="text"
+                                id="dni"
+                                name="dni"
+                                placeholder="Ej. 12345678"
+                                maxlength="8"
+                                inputmode="numeric"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="area">
+                                Área *
+                            </label>
+
+                            <input
+                                type="text"
+                                id="area"
+                                name="area"
+                                placeholder="Ej. Administración"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cargo">
+                                Cargo *
+                            </label>
+
+                            <input
+                                type="text"
+                                id="cargo"
+                                name="cargo"
+                                placeholder="Ej. Asistente administrativo"
+                                required
+                            >
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- DATOS DEL PERMISO -->
+                <section class="card">
+
+                    <div class="section-title">
+                        <div class="number">2</div>
+
+                        <div>
+                            <h3>Información del permiso</h3>
+                            <p>Indica cuándo y qué tipo de permiso necesitas.</p>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label for="tipo_permiso">
+                                Tipo de permiso *
+                            </label>
+
+                            <select
+                                id="tipo_permiso"
+                                name="tipo_permiso"
+                                required
+                            >
+                                <option value="">
+                                    Selecciona una opción
+                                </option>
+
+                                <option value="Personal">
+                                    Personal
+                                </option>
+
+                                <option value="Médico">
+                                    Cita médica
+                                </option>
+
+                                <option value="Familiar">
+                                    Motivo familiar
+                                </option>
+
+                                <option value="Laboral">
+                                    Motivo laboral
+                                </option>
+
+                                <option value="Emergencia">
+                                    Emergencia
+                                </option>
+
+                                <option value="Otro">
+                                    Otro
+                                </option>
+                            </select>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label for="fecha">
+                                Fecha *
+                            </label>
+
+                            <input
+                                type="date"
+                                id="fecha"
+                                name="fecha"
+                                required
+                            >
+                        </div>
+
+
+                        <div class="form-group">
+                            <label for="hora_salida">
+                                Hora de salida *
+                            </label>
+
+                            <input
+                                type="time"
+                                id="hora_salida"
+                                name="hora_salida"
+                                required
+                            >
+                        </div>
+
+
+                        <div class="form-group">
+                            <label for="hora_retorno">
+                                Hora de retorno
+                            </label>
+
+                            <input
+                                type="time"
+                                id="hora_retorno"
+                                name="hora_retorno"
+                            >
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- MOTIVO -->
+                <section class="card">
+
+                    <div class="section-title">
+                        <div class="number">3</div>
+
+                        <div>
+                            <h3>Motivo de la solicitud</h3>
+                            <p>Explica brevemente el motivo de tu permiso.</p>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="motivo">
+                            Motivo *
+                        </label>
+
+                        <textarea
+                            id="motivo"
+                            name="motivo"
+                            rows="4"
+                            maxlength="500"
+                            placeholder="Describe el motivo de tu solicitud..."
+                            required
+                        ></textarea>
+
+                        <div class="counter">
+                            <span id="contador">0</span>/500
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="observaciones">
+                            Observaciones
+                        </label>
+
+                        <textarea
+                            id="observaciones"
+                            name="observaciones"
+                            rows="3"
+                            maxlength="500"
+                            placeholder="Información adicional (opcional)"
+                        ></textarea>
+
+                    </div>
+
+                </section>
+
+
+                <!-- AVISO -->
+                <div class="notice">
+                    <div class="notice-icon">!</div>
+
+                    <div>
+                        <strong>Importante</strong>
+
+                        <p>
+                            Tu solicitud será enviada al responsable para su
+                            revisión. El permiso quedará registrado como
+                            <strong>Pendiente</strong> hasta recibir una respuesta.
+                        </p>
+                    </div>
+                </div>
+
+
+                <!-- BOTONES -->
+                <div class="actions">
+
+                    <button
+                        type="reset"
+                        class="btn btn-secondary"
+                        id="btnLimpiar"
+                    >
+                        Limpiar
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary"
+                        id="btnEnviar"
+                    >
+                        <span id="textoBoton">
+                            Enviar solicitud
+                        </span>
+
+                        <span
+                            id="loader"
+                            class="loader hidden"
+                        ></span>
+                    </button>
+
+                </div>
+
+            </form>
+
+
+            <!-- MENSAJE DE ÉXITO -->
+            <div
+                id="successMessage"
+                class="success-card hidden"
+            >
+
+                <div class="success-icon">
+                    ✓
+                </div>
+
+                <h2>Solicitud enviada correctamente</h2>
+
+                <p>
+                    Tu solicitud fue registrada y enviada para revisión.
+                </p>
+
+                <div class="request-number">
+                    <span>Número de solicitud</span>
+
+                    <strong id="numeroSolicitud">
+                        -
+                    </strong>
+                </div>
+
+                <div class="status">
+                    <span>Estado</span>
+                    <strong>PENDIENTE</strong>
+                </div>
+
+                <button
+                    type="button"
+                    class="btn btn-primary"
+                    id="nuevaSolicitud"
+                >
+                    Registrar otra solicitud
+                </button>
+
+            </div>
+
+        </main>
+
+
+        <footer>
+            Portal interno de trabajadores
+        </footer>
+
+    </div>
+
+
+    <script src="solicitarpermisos.js"></script>
+
+</body>
+</html>
