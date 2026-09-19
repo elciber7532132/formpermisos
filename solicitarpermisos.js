@@ -1,5 +1,11 @@
-javascript
 document.addEventListener("DOMContentLoaded", () => {
+
+    // =====================================================
+    // URL DEL BACKEND EN RENDER
+    // =====================================================
+
+    const API_URL = "https://permisosfun-1.onrender.com";
+
 
     const formulario =
         document.getElementById("solicitudForm");
@@ -133,7 +139,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // =====================================================
-    // BUSCAR TRABAJADOR AL TERMINAR DNI
+    // BUSCAR TRABAJADOR POR DNI
     // =====================================================
 
     dni.addEventListener(
@@ -150,7 +156,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const respuesta =
                     await fetch(
-                        `/api/public/worker?dni=${encodeURIComponent(dni.value)}`
+                        `${API_URL}/api/public/worker?dni=${encodeURIComponent(dni.value)}`
                     );
 
 
@@ -168,9 +174,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         resultado.worker;
 
 
-                    // Completar automáticamente
-                    // los datos existentes.
-
                     nombre.value =
                         worker.names || "";
 
@@ -180,11 +183,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     cargo.value =
                         worker.position || "";
 
-
-                    // Si los campos están
-                    // bloqueados por el HTML,
-                    // el trabajador puede usar
-                    // los datos ya registrados.
 
                     nombre.dataset.autoloaded =
                         "true";
@@ -197,9 +195,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
                 } else {
-
-                    // No hacemos nada si el DNI
-                    // todavía no existe.
 
                     nombre.dataset.autoloaded =
                         "false";
@@ -221,7 +216,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // =====================================================
-    // VALIDAR HORARIO DE RETORNO
+    // VALIDAR HORA DE RETORNO
     // =====================================================
 
     horaRetorno.addEventListener(
@@ -258,9 +253,9 @@ document.addEventListener("DOMContentLoaded", () => {
             event.preventDefault();
 
 
-            // ---------------------------------------------
+            // =============================================
             // VALIDAR DNI
-            // ---------------------------------------------
+            // =============================================
 
             if (
                 dni.value.length !== 8
@@ -276,9 +271,9 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
 
-            // ---------------------------------------------
-            // VALIDAR CAMPOS
-            // ---------------------------------------------
+            // =============================================
+            // VALIDAR NOMBRE
+            // =============================================
 
             if (
                 !nombre.value.trim()
@@ -294,6 +289,10 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
 
+            // =============================================
+            // VALIDAR ÁREA
+            // =============================================
+
             if (
                 !area.value.trim()
             ) {
@@ -307,6 +306,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
+
+            // =============================================
+            // VALIDAR CARGO
+            // =============================================
 
             if (
                 !cargo.value.trim()
@@ -322,6 +325,10 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
 
+            // =============================================
+            // VALIDAR TIPO
+            // =============================================
+
             if (
                 !tipoPermiso.value
             ) {
@@ -335,6 +342,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
+
+            // =============================================
+            // VALIDAR FECHA
+            // =============================================
 
             if (
                 !fecha.value
@@ -350,6 +361,10 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
 
+            // =============================================
+            // VALIDAR HORA DE SALIDA
+            // =============================================
+
             if (
                 !horaSalida.value
             ) {
@@ -363,6 +378,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
+
+            // =============================================
+            // VALIDAR MOTIVO
+            // =============================================
 
             if (
                 !motivo.value.trim()
@@ -378,9 +397,9 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
 
-            // ---------------------------------------------
+            // =============================================
             // VALIDAR HORARIOS
-            // ---------------------------------------------
+            // =============================================
 
             if (
                 horaRetorno.value &&
@@ -398,12 +417,9 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
 
-            // ---------------------------------------------
+            // =============================================
             // DATOS PARA EL BACKEND
-            //
-            // IMPORTANTE:
-            // Los nombres aquí coinciden con api.js
-            // ---------------------------------------------
+            // =============================================
 
             const datos = {
 
@@ -439,9 +455,9 @@ document.addEventListener("DOMContentLoaded", () => {
             };
 
 
-            // ---------------------------------------------
+            // =============================================
             // ESTADO CARGANDO
-            // ---------------------------------------------
+            // =============================================
 
             btnEnviar.disabled =
                 true;
@@ -457,12 +473,12 @@ document.addEventListener("DOMContentLoaded", () => {
             try {
 
                 // =========================================
-                // ENVIAR AL BACKEND
+                // ENVIAR A RENDER
                 // =========================================
 
                 const respuesta =
                     await fetch(
-                        "/api/public/permissions",
+                        `${API_URL}/api/public/permissions`,
                         {
 
                             method: "POST",
@@ -547,12 +563,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 // Ir arriba
 
-                window.scrollTo(
-                    {
-                        top: 0,
-                        behavior: "smooth"
-                    }
-                );
+                window.scrollTo({
+                    top: 0,
+                    behavior: "smooth"
+                });
 
 
             } catch (error) {
@@ -611,12 +625,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 "hidden"
             );
 
-            window.scrollTo(
-                {
-                    top: 0,
-                    behavior: "smooth"
-                }
-            );
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
 
         }
     );
@@ -630,6 +642,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById(
             "btnLimpiar"
         );
+
 
     if (btnLimpiar) {
 
@@ -656,4 +669,3 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 });
-
