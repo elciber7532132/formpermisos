@@ -7,6 +7,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const API_URL = "https://permisosfun-1.onrender.com";
 
 
+    // =====================================================
+    // ELEMENTOS DEL FORMULARIO
+    // =====================================================
+
     const formulario =
         document.getElementById("solicitudForm");
 
@@ -90,548 +94,660 @@ document.addEventListener("DOMContentLoaded", () => {
     const fechaActual =
         obtenerFechaLocal();
 
-    fecha.min =
-        fechaActual;
+    if (fecha) {
+        fecha.min = fechaActual;
+    }
 
 
     // =====================================================
     // CONTADOR DEL MOTIVO
     // =====================================================
 
-    motivo.addEventListener(
-        "input",
-        () => {
+    if (motivo && contador) {
 
-            contador.textContent =
-                motivo.value.length;
+        motivo.addEventListener(
+            "input",
+            () => {
 
-        }
-    );
+                contador.textContent =
+                    motivo.value.length;
+
+            }
+        );
+
+    }
 
 
     // =====================================================
     // VALIDAR DNI
     // =====================================================
 
-    dni.addEventListener(
-        "input",
-        () => {
+    if (dni) {
 
-            dni.value =
-                dni.value.replace(
-                    /\D/g,
-                    ""
-                );
-
-            if (
-                dni.value.length > 8
-            ) {
+        dni.addEventListener(
+            "input",
+            () => {
 
                 dni.value =
-                    dni.value.substring(
-                        0,
-                        8
+                    dni.value.replace(
+                        /\D/g,
+                        ""
                     );
-            }
 
-        }
-    );
+                if (
+                    dni.value.length > 8
+                ) {
+
+                    dni.value =
+                        dni.value.substring(
+                            0,
+                            8
+                        );
+
+                }
+
+            }
+        );
+
+    }
 
 
     // =====================================================
     // BUSCAR TRABAJADOR POR DNI
     // =====================================================
 
-    dni.addEventListener(
-        "blur",
-        async () => {
+    if (dni) {
 
-            if (
-                dni.value.length !== 8
-            ) {
-                return;
-            }
-
-            try {
-
-                const respuesta =
-                    await fetch(
-                        `${API_URL}/api/public/worker?dni=${encodeURIComponent(dni.value)}`
-                    );
-
-
-                const resultado =
-                    await respuesta.json();
-
+        dni.addEventListener(
+            "blur",
+            async () => {
 
                 if (
-                    respuesta.ok &&
-                    resultado.found &&
-                    resultado.worker
+                    dni.value.length !== 8
                 ) {
+                    return;
+                }
 
-                    const worker =
-                        resultado.worker;
+                try {
 
-
-                    nombre.value =
-                        worker.names || "";
-
-                    area.value =
-                        worker.area || "";
-
-                    cargo.value =
-                        worker.position || "";
+                    const respuesta =
+                        await fetch(
+                            `${API_URL}/api/public/worker?dni=${encodeURIComponent(dni.value)}`
+                        );
 
 
-                    nombre.dataset.autoloaded =
-                        "true";
-
-                    area.dataset.autoloaded =
-                        "true";
-
-                    cargo.dataset.autoloaded =
-                        "true";
+                    const resultado =
+                        await respuesta.json();
 
 
-                } else {
+                    if (
+                        respuesta.ok &&
+                        resultado.found &&
+                        resultado.worker
+                    ) {
 
-                    nombre.dataset.autoloaded =
-                        "false";
+                        const worker =
+                            resultado.worker;
+
+
+                        if (nombre) {
+
+                            nombre.value =
+                                worker.names || "";
+
+                            nombre.dataset.autoloaded =
+                                "true";
+
+                        }
+
+
+                        if (area) {
+
+                            area.value =
+                                worker.area || "";
+
+                            area.dataset.autoloaded =
+                                "true";
+
+                        }
+
+
+                        if (cargo) {
+
+                            cargo.value =
+                                worker.position || "";
+
+                            cargo.dataset.autoloaded =
+                                "true";
+
+                        }
+
+
+                    } else {
+
+                        if (nombre) {
+                            nombre.dataset.autoloaded =
+                                "false";
+                        }
+
+                    }
+
+
+                } catch (error) {
+
+                    console.warn(
+                        "No se pudo consultar el trabajador:",
+                        error
+                    );
 
                 }
 
-
-            } catch (error) {
-
-                console.warn(
-                    "No se pudo consultar el trabajador:",
-                    error
-                );
-
             }
+        );
 
-        }
-    );
+    }
 
 
     // =====================================================
     // VALIDAR HORA DE RETORNO
     // =====================================================
 
-    horaRetorno.addEventListener(
-        "change",
-        () => {
+    if (horaRetorno) {
 
-            if (
-                horaSalida.value &&
-                horaRetorno.value &&
-                horaRetorno.value <=
-                    horaSalida.value
-            ) {
+        horaRetorno.addEventListener(
+            "change",
+            () => {
 
-                alert(
-                    "La hora de retorno debe ser posterior a la hora de salida."
-                );
+                if (
+                    horaSalida &&
+                    horaSalida.value &&
+                    horaRetorno.value &&
+                    horaRetorno.value <=
+                        horaSalida.value
+                ) {
 
-                horaRetorno.value =
-                    "";
+                    alert(
+                        "La hora de retorno debe ser posterior a la hora de salida."
+                    );
+
+                    horaRetorno.value =
+                        "";
+
+                }
+
             }
+        );
 
-        }
-    );
+    }
 
 
     // =====================================================
     // ENVIAR FORMULARIO
     // =====================================================
 
-    formulario.addEventListener(
-        "submit",
-        async (event) => {
+    if (formulario) {
 
-            event.preventDefault();
+        formulario.addEventListener(
+            "submit",
+            async (event) => {
 
+                event.preventDefault();
 
-            // =============================================
-            // VALIDAR DNI
-            // =============================================
 
-            if (
-                dni.value.length !== 8
-            ) {
+                // =============================================
+                // VALIDAR DNI
+                // =============================================
 
-                alert(
-                    "El DNI debe tener exactamente 8 números."
-                );
+                if (
+                    !dni ||
+                    dni.value.length !== 8
+                ) {
 
-                dni.focus();
-
-                return;
-            }
-
-
-            // =============================================
-            // VALIDAR NOMBRE
-            // =============================================
-
-            if (
-                !nombre.value.trim()
-            ) {
-
-                alert(
-                    "Ingresa el nombre completo."
-                );
-
-                nombre.focus();
-
-                return;
-            }
-
-
-            // =============================================
-            // VALIDAR ÁREA
-            // =============================================
-
-            if (
-                !area.value.trim()
-            ) {
-
-                alert(
-                    "Ingresa el área."
-                );
-
-                area.focus();
-
-                return;
-            }
-
-
-            // =============================================
-            // VALIDAR CARGO
-            // =============================================
-
-            if (
-                !cargo.value.trim()
-            ) {
-
-                alert(
-                    "Ingresa el cargo."
-                );
-
-                cargo.focus();
-
-                return;
-            }
-
-
-            // =============================================
-            // VALIDAR TIPO
-            // =============================================
-
-            if (
-                !tipoPermiso.value
-            ) {
-
-                alert(
-                    "Selecciona el tipo de permiso."
-                );
-
-                tipoPermiso.focus();
-
-                return;
-            }
-
-
-            // =============================================
-            // VALIDAR FECHA
-            // =============================================
-
-            if (
-                !fecha.value
-            ) {
-
-                alert(
-                    "Selecciona la fecha."
-                );
-
-                fecha.focus();
-
-                return;
-            }
-
-
-            // =============================================
-            // VALIDAR HORA DE SALIDA
-            // =============================================
-
-            if (
-                !horaSalida.value
-            ) {
-
-                alert(
-                    "Selecciona la hora de salida."
-                );
-
-                horaSalida.focus();
-
-                return;
-            }
-
-
-            // =============================================
-            // VALIDAR MOTIVO
-            // =============================================
-
-            if (
-                !motivo.value.trim()
-            ) {
-
-                alert(
-                    "Escribe el motivo de la solicitud."
-                );
-
-                motivo.focus();
-
-                return;
-            }
-
-
-            // =============================================
-            // VALIDAR HORARIOS
-            // =============================================
-
-            if (
-                horaRetorno.value &&
-                horaRetorno.value <=
-                    horaSalida.value
-            ) {
-
-                alert(
-                    "La hora de retorno debe ser posterior a la hora de salida."
-                );
-
-                horaRetorno.focus();
-
-                return;
-            }
-
-
-            // =============================================
-            // DATOS PARA EL BACKEND
-            // =============================================
-
-            const datos = {
-
-                dni:
-                    dni.value.trim(),
-
-                names:
-                    nombre.value.trim(),
-
-                position:
-                    cargo.value.trim(),
-
-                area:
-                    area.value.trim(),
-
-                type:
-                    tipoPermiso.value,
-
-                date:
-                    fecha.value,
-
-                exit_time:
-                    horaSalida.value,
-
-                return_time:
-                    horaRetorno.value || "",
-
-                reason:
-                    motivo.value.trim(),
-
-                observation:
-                    observaciones.value.trim()
-            };
-
-
-            // =============================================
-            // ESTADO CARGANDO
-            // =============================================
-
-            btnEnviar.disabled =
-                true;
-
-            textoBoton.textContent =
-                "Enviando...";
-
-            loader.classList.remove(
-                "hidden"
-            );
-
-
-            try {
-
-                // =========================================
-                // ENVIAR A RENDER
-                // =========================================
-
-                const respuesta =
-                    await fetch(
-                        `${API_URL}/api/public/permissions`,
-                        {
-
-                            method: "POST",
-
-                            headers: {
-                                "Content-Type":
-                                    "application/json"
-                            },
-
-                            body:
-                                JSON.stringify(
-                                    datos
-                                )
-                        }
+                    alert(
+                        "El DNI debe tener exactamente 8 números."
                     );
 
+                    if (dni) {
+                        dni.focus();
+                    }
 
-                // =========================================
-                // LEER RESPUESTA
-                // =========================================
+                    return;
+                }
 
-                let resultado = {};
+
+                // =============================================
+                // VALIDAR NOMBRE
+                // =============================================
+
+                if (
+                    !nombre ||
+                    !nombre.value.trim()
+                ) {
+
+                    alert(
+                        "Ingresa el nombre completo."
+                    );
+
+                    if (nombre) {
+                        nombre.focus();
+                    }
+
+                    return;
+                }
+
+
+                // =============================================
+                // VALIDAR ÁREA
+                // =============================================
+
+                if (
+                    !area ||
+                    !area.value.trim()
+                ) {
+
+                    alert(
+                        "Ingresa el área."
+                    );
+
+                    if (area) {
+                        area.focus();
+                    }
+
+                    return;
+                }
+
+
+                // =============================================
+                // VALIDAR CARGO
+                // =============================================
+
+                if (
+                    !cargo ||
+                    !cargo.value.trim()
+                ) {
+
+                    alert(
+                        "Ingresa el cargo."
+                    );
+
+                    if (cargo) {
+                        cargo.focus();
+                    }
+
+                    return;
+                }
+
+
+                // =============================================
+                // VALIDAR TIPO
+                // =============================================
+
+                if (
+                    !tipoPermiso ||
+                    !tipoPermiso.value
+                ) {
+
+                    alert(
+                        "Selecciona el tipo de permiso."
+                    );
+
+                    if (tipoPermiso) {
+                        tipoPermiso.focus();
+                    }
+
+                    return;
+                }
+
+
+                // =============================================
+                // VALIDAR FECHA
+                // =============================================
+
+                if (
+                    !fecha ||
+                    !fecha.value
+                ) {
+
+                    alert(
+                        "Selecciona la fecha."
+                    );
+
+                    if (fecha) {
+                        fecha.focus();
+                    }
+
+                    return;
+                }
+
+
+                // =============================================
+                // VALIDAR HORA DE SALIDA
+                // =============================================
+
+                if (
+                    !horaSalida ||
+                    !horaSalida.value
+                ) {
+
+                    alert(
+                        "Selecciona la hora de salida."
+                    );
+
+                    if (horaSalida) {
+                        horaSalida.focus();
+                    }
+
+                    return;
+                }
+
+
+                // =============================================
+                // VALIDAR MOTIVO
+                // =============================================
+
+                if (
+                    !motivo ||
+                    !motivo.value.trim()
+                ) {
+
+                    alert(
+                        "Escribe el motivo de la solicitud."
+                    );
+
+                    if (motivo) {
+                        motivo.focus();
+                    }
+
+                    return;
+                }
+
+
+                // =============================================
+                // VALIDAR HORARIOS
+                // =============================================
+
+                if (
+                    horaRetorno &&
+                    horaRetorno.value &&
+                    horaRetorno.value <=
+                        horaSalida.value
+                ) {
+
+                    alert(
+                        "La hora de retorno debe ser posterior a la hora de salida."
+                    );
+
+                    horaRetorno.focus();
+
+                    return;
+                }
+
+
+                // =============================================
+                // DATOS PARA EL BACKEND
+                // =============================================
+
+                const datos = {
+
+                    dni:
+                        dni.value.trim(),
+
+                    names:
+                        nombre.value.trim(),
+
+                    position:
+                        cargo.value.trim(),
+
+                    area:
+                        area.value.trim(),
+
+                    type:
+                        tipoPermiso.value,
+
+                    date:
+                        fecha.value,
+
+                    exit_time:
+                        horaSalida.value,
+
+                    return_time:
+                        horaRetorno
+                            ? horaRetorno.value || ""
+                            : "",
+
+                    reason:
+                        motivo.value.trim(),
+
+                    observation:
+                        observaciones
+                            ? observaciones.value.trim()
+                            : ""
+
+                };
+
+
+                // =============================================
+                // ESTADO CARGANDO
+                // =============================================
+
+                if (btnEnviar) {
+                    btnEnviar.disabled = true;
+                }
+
+                if (textoBoton) {
+                    textoBoton.textContent =
+                        "Enviando...";
+                }
+
+                if (loader) {
+                    loader.classList.remove(
+                        "hidden"
+                    );
+                }
+
 
                 try {
 
-                    resultado =
-                        await respuesta.json();
+                    // =========================================
+                    // ENVIAR A RENDER
+                    // =========================================
+
+                    const respuesta =
+                        await fetch(
+                            `${API_URL}/api/public/permissions`,
+                            {
+
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                body:
+                                    JSON.stringify(
+                                        datos
+                                    )
+
+                            }
+                        );
+
+
+                    // =========================================
+                    // LEER RESPUESTA
+                    // =========================================
+
+                    let resultado = {};
+
+                    try {
+
+                        resultado =
+                            await respuesta.json();
+
+                    } catch (error) {
+
+                        resultado = {};
+
+                    }
+
+
+                    // =========================================
+                    // ERROR
+                    // =========================================
+
+                    if (
+                        !respuesta.ok
+                    ) {
+
+                        throw new Error(
+                            resultado.error ||
+                            resultado.message ||
+                            "No se pudo registrar la solicitud."
+                        );
+
+                    }
+
+
+                    // =========================================
+                    // SOLICITUD REGISTRADA
+                    // =========================================
+
+                    const numero =
+                        resultado.request?.id ||
+                        resultado.id ||
+                        resultado.solicitud_id ||
+                        resultado.numero ||
+                        resultado.numero_solicitud ||
+                        "Registrada";
+
+
+                    if (numeroSolicitud) {
+
+                        numeroSolicitud.textContent =
+                            numero;
+
+                    }
+
+
+                    // Ocultar formulario
+
+                    formulario.classList.add(
+                        "hidden"
+                    );
+
+
+                    // Mostrar confirmación
+
+                    if (successMessage) {
+
+                        successMessage.classList.remove(
+                            "hidden"
+                        );
+
+                    }
+
+
+                    // Ir arriba
+
+                    window.scrollTo({
+                        top: 0,
+                        behavior: "smooth"
+                    });
+
 
                 } catch (error) {
 
-                    resultado = {};
-
-                }
-
-
-                // =========================================
-                // ERROR
-                // =========================================
-
-                if (
-                    !respuesta.ok
-                ) {
-
-                    throw new Error(
-                        resultado.error ||
-                        resultado.message ||
-                        "No se pudo registrar la solicitud."
+                    console.error(
+                        "Error al enviar solicitud:",
+                        error
                     );
+
+
+                    alert(
+                        error.message ||
+                        "Ocurrió un error al enviar la solicitud."
+                    );
+
+
+                } finally {
+
+                    if (btnEnviar) {
+
+                        btnEnviar.disabled =
+                            false;
+
+                    }
+
+                    if (textoBoton) {
+
+                        textoBoton.textContent =
+                            "Enviar solicitud";
+
+                    }
+
+                    if (loader) {
+
+                        loader.classList.add(
+                            "hidden"
+                        );
+
+                    }
+
                 }
-
-
-                // =========================================
-                // SOLICITUD REGISTRADA
-                // =========================================
-
-                const numero =
-                    resultado.request?.id ||
-                    resultado.id ||
-                    resultado.solicitud_id ||
-                    resultado.numero ||
-                    resultado.numero_solicitud ||
-                    "Registrada";
-
-
-                numeroSolicitud.textContent =
-                    numero;
-
-
-                // Ocultar formulario
-
-                formulario.classList.add(
-                    "hidden"
-                );
-
-
-                // Mostrar confirmación
-
-                successMessage.classList.remove(
-                    "hidden"
-                );
-
-
-                // Ir arriba
-
-                window.scrollTo({
-                    top: 0,
-                    behavior: "smooth"
-                });
-
-
-            } catch (error) {
-
-                console.error(
-                    "Error al enviar solicitud:",
-                    error
-                );
-
-
-                alert(
-                    error.message ||
-                    "Ocurrió un error al enviar la solicitud."
-                );
-
-
-            } finally {
-
-                btnEnviar.disabled =
-                    false;
-
-                textoBoton.textContent =
-                    "Enviar solicitud";
-
-                loader.classList.add(
-                    "hidden"
-                );
 
             }
+        );
 
-        }
-    );
+    }
 
 
     // =====================================================
     // NUEVA SOLICITUD
     // =====================================================
 
-    nuevaSolicitud.addEventListener(
-        "click",
-        () => {
+    if (nuevaSolicitud) {
 
-            formulario.reset();
+        nuevaSolicitud.addEventListener(
+            "click",
+            () => {
 
-            contador.textContent =
-                "0";
+                formulario.reset();
 
-            fecha.min =
-                obtenerFechaLocal();
+                if (contador) {
 
-            successMessage.classList.add(
-                "hidden"
-            );
+                    contador.textContent =
+                        "0";
 
-            formulario.classList.remove(
-                "hidden"
-            );
+                }
 
-            window.scrollTo({
-                top: 0,
-                behavior: "smooth"
-            });
+                if (fecha) {
 
-        }
-    );
+                    fecha.min =
+                        obtenerFechaLocal();
+
+                }
+
+                if (successMessage) {
+
+                    successMessage.classList.add(
+                        "hidden"
+                    );
+
+                }
+
+                formulario.classList.remove(
+                    "hidden"
+                );
+
+                window.scrollTo({
+                    top: 0,
+                    behavior: "smooth"
+                });
+
+            }
+        );
+
+    }
 
 
     // =====================================================
@@ -653,11 +769,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 setTimeout(
                     () => {
 
-                        contador.textContent =
-                            "0";
+                        if (contador) {
 
-                        fecha.min =
-                            obtenerFechaLocal();
+                            contador.textContent =
+                                "0";
+
+                        }
+
+                        if (fecha) {
+
+                            fecha.min =
+                                obtenerFechaLocal();
+
+                        }
 
                     },
                     0
