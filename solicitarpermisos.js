@@ -67,12 +67,165 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // =====================================================
+    // DOCUMENTO SUSTENTATORIO
+    // =====================================================
+
+    const documento =
+        document.getElementById("documento");
+
+    const nombreArchivo =
+        document.getElementById("nombreArchivo");
+
+
+    // =====================================================
+    // MOSTRAR ARCHIVO SELECCIONADO
+    // =====================================================
+
+    if (documento) {
+
+        documento.addEventListener(
+            "change",
+            () => {
+
+                const archivo =
+                    documento.files[0];
+
+                if (!archivo) {
+
+                    if (nombreArchivo) {
+                        nombreArchivo.textContent = "";
+                    }
+
+                    return;
+                }
+
+
+                // -----------------------------------------
+                // TIPOS PERMITIDOS
+                // -----------------------------------------
+
+                const tiposPermitidos = [
+                    "image/jpeg",
+                    "image/png",
+                    "application/pdf"
+                ];
+
+
+                if (
+                    !tiposPermitidos.includes(
+                        archivo.type
+                    )
+                ) {
+
+                    alert(
+                        "Solo se permiten archivos JPG, JPEG, PNG o PDF."
+                    );
+
+                    documento.value = "";
+
+                    if (nombreArchivo) {
+                        nombreArchivo.textContent = "";
+                    }
+
+                    return;
+                }
+
+
+                // -----------------------------------------
+                // TAMAÑO MÁXIMO: 4 MB
+                // -----------------------------------------
+
+                const maximo =
+                    4 * 1024 * 1024;
+
+
+                if (
+                    archivo.size > maximo
+                ) {
+
+                    alert(
+                        "El archivo no puede superar los 4 MB."
+                    );
+
+                    documento.value = "";
+
+                    if (nombreArchivo) {
+                        nombreArchivo.textContent = "";
+                    }
+
+                    return;
+                }
+
+
+                // -----------------------------------------
+                // MOSTRAR NOMBRE
+                // -----------------------------------------
+
+                if (nombreArchivo) {
+
+                    nombreArchivo.textContent =
+                        "📎 Archivo seleccionado: " +
+                        archivo.name;
+
+                }
+
+            }
+        );
+
+    }
+
+
+    // =====================================================
+    // CONVERTIR ARCHIVO A BASE64
+    // =====================================================
+
+    function archivoABase64(archivo) {
+
+        return new Promise(
+            (resolve, reject) => {
+
+                const reader =
+                    new FileReader();
+
+
+                reader.onload = () => {
+
+                    resolve(
+                        reader.result
+                    );
+
+                };
+
+
+                reader.onerror = () => {
+
+                    reject(
+                        new Error(
+                            "No se pudo leer el archivo."
+                        )
+                    );
+
+                };
+
+
+                reader.readAsDataURL(
+                    archivo
+                );
+
+            }
+        );
+
+    }
+
+
+    // =====================================================
     // FECHA MÍNIMA = HOY
     // =====================================================
 
     function obtenerFechaLocal() {
 
-        const hoy = new Date();
+        const hoy =
+            new Date();
 
         const año =
             hoy.getFullYear();
@@ -94,8 +247,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const fechaActual =
         obtenerFechaLocal();
 
+
     if (fecha) {
-        fecha.min = fechaActual;
+
+        fecha.min =
+            fechaActual;
+
     }
 
 
@@ -103,7 +260,10 @@ document.addEventListener("DOMContentLoaded", () => {
     // CONTADOR DEL MOTIVO
     // =====================================================
 
-    if (motivo && contador) {
+    if (
+        motivo &&
+        contador
+    ) {
 
         motivo.addEventListener(
             "input",
@@ -133,6 +293,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         /\D/g,
                         ""
                     );
+
 
                 if (
                     dni.value.length > 8
@@ -165,8 +326,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (
                     dni.value.length !== 8
                 ) {
+
                     return;
+
                 }
+
 
                 try {
 
@@ -222,12 +386,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
                         }
 
-
                     } else {
 
                         if (nombre) {
+
                             nombre.dataset.autoloaded =
                                 "false";
+
                         }
 
                     }
@@ -484,6 +649,93 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
                 // =============================================
+                // VALIDAR DOCUMENTO
+                // =============================================
+
+                let documentoBase64 = "";
+                let documentoNombre = "";
+                let documentoTipo = "";
+
+
+                if (
+                    documento &&
+                    documento.files &&
+                    documento.files.length > 0
+                ) {
+
+                    const archivo =
+                        documento.files[0];
+
+
+                    const tiposPermitidos = [
+                        "image/jpeg",
+                        "image/png",
+                        "application/pdf"
+                    ];
+
+
+                    if (
+                        !tiposPermitidos.includes(
+                            archivo.type
+                        )
+                    ) {
+
+                        alert(
+                            "Solo se permiten archivos JPG, JPEG, PNG o PDF."
+                        );
+
+                        documento.value = "";
+
+                        return;
+                    }
+
+
+                    const maximo =
+                        4 * 1024 * 1024;
+
+
+                    if (
+                        archivo.size > maximo
+                    ) {
+
+                        alert(
+                            "El archivo no puede superar los 4 MB."
+                        );
+
+                        documento.value = "";
+
+                        return;
+                    }
+
+
+                    try {
+
+                        documentoBase64 =
+                            await archivoABase64(
+                                archivo
+                            );
+
+                        documentoNombre =
+                            archivo.name;
+
+                        documentoTipo =
+                            archivo.type;
+
+                    } catch (error) {
+
+                        alert(
+                            "No se pudo leer el documento seleccionado."
+                        );
+
+                        console.error(error);
+
+                        return;
+                    }
+
+                }
+
+
+                // =============================================
                 // DATOS PARA EL BACKEND
                 // =============================================
 
@@ -521,7 +773,20 @@ document.addEventListener("DOMContentLoaded", () => {
                     observation:
                         observaciones
                             ? observaciones.value.trim()
-                            : ""
+                            : "",
+
+                    // -----------------------------------------
+                    // DOCUMENTO SUSTENTATORIO
+                    // -----------------------------------------
+
+                    document:
+                        documentoBase64,
+
+                    document_name:
+                        documentoNombre,
+
+                    document_type:
+                        documentoTipo
 
                 };
 
@@ -531,18 +796,27 @@ document.addEventListener("DOMContentLoaded", () => {
                 // =============================================
 
                 if (btnEnviar) {
-                    btnEnviar.disabled = true;
+
+                    btnEnviar.disabled =
+                        true;
+
                 }
+
 
                 if (textoBoton) {
+
                     textoBoton.textContent =
                         "Enviando...";
+
                 }
 
+
                 if (loader) {
+
                     loader.classList.remove(
                         "hidden"
                     );
+
                 }
 
 
@@ -560,8 +834,10 @@ document.addEventListener("DOMContentLoaded", () => {
                                 method: "POST",
 
                                 headers: {
+
                                     "Content-Type":
                                         "application/json"
+
                                 },
 
                                 body:
@@ -578,6 +854,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     // =========================================
 
                     let resultado = {};
+
 
                     try {
 
@@ -614,6 +891,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     const numero =
                         resultado.request?.id ||
+                        resultado.permission?.id ||
                         resultado.id ||
                         resultado.solicitud_id ||
                         resultado.numero ||
@@ -650,8 +928,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     // Ir arriba
 
                     window.scrollTo({
+
                         top: 0,
+
                         behavior: "smooth"
+
                     });
 
 
@@ -678,12 +959,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     }
 
+
                     if (textoBoton) {
 
                         textoBoton.textContent =
                             "Enviar solicitud";
 
                     }
+
 
                     if (loader) {
 
@@ -713,6 +996,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 formulario.reset();
 
+
                 if (contador) {
 
                     contador.textContent =
@@ -720,12 +1004,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 }
 
+
                 if (fecha) {
 
                     fecha.min =
                         obtenerFechaLocal();
 
                 }
+
+
+                if (nombreArchivo) {
+
+                    nombreArchivo.textContent =
+                        "";
+
+                }
+
 
                 if (successMessage) {
 
@@ -735,13 +1029,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 }
 
+
                 formulario.classList.remove(
                     "hidden"
                 );
 
+
                 window.scrollTo({
+
                     top: 0,
+
                     behavior: "smooth"
+
                 });
 
             }
@@ -776,10 +1075,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
                         }
 
+
                         if (fecha) {
 
                             fecha.min =
                                 obtenerFechaLocal();
+
+                        }
+
+
+                        if (nombreArchivo) {
+
+                            nombreArchivo.textContent =
+                                "";
 
                         }
 
